@@ -10,6 +10,7 @@ struct No {
 
 No* inicioFila = nullptr;
 No* fimFila = nullptr;
+No* topoHistorico = nullptr;
 
 void enqueue(string nome, int urgencia) {
     No* novo = new No;
@@ -66,55 +67,37 @@ int tamanho() {
     return total;
 }
 
-int main() {
-    int opcao;
+void push(string nome) {
+    No* novo = new No;
+    novo->nome = nome;
+    novo->urgencia = 0;
+    novo->proximo = topoHistorico;
 
-    do {
-        cout << "\nFila de Pacientes\n";
-        cout << "1 - Cadastrar paciente\n";
-        cout << "2 - Remover primeiro paciente\n";
-        cout << "3 - Ver proximo paciente\n";
-        cout << "4 - Mostrar tamanho da fila\n";
-        cout << "0 - Sair\n";
-        cout << "Opcao: ";
-        cin >> opcao;
+    topoHistorico = novo;
+}
 
-        if (opcao == 1) {
-            string nome;
-            int urgencia;
-
-            cout << "Nome do paciente: ";
-            cin.ignore(10000, '\n');
-            getline(cin, nome);
-
-            cout << "Urgencia (1-baixa, 2-media, 3-alta): ";
-            cin >> urgencia;
-
-            if (urgencia >= 1 && urgencia <= 3) {
-                enqueue(nome, urgencia);
-                cout << "Paciente cadastrado." << endl;
-            } else {
-                cout << "Urgencia invalida." << endl;
-            }
-        } else if (opcao == 2) {
-            dequeue();
-        } else if (opcao == 3) {
-            frente_peak();
-        } else if (opcao == 4) {
-            cout << "Total na fila: " << tamanho() << endl;
-        } else if (opcao != 0) {
-            cout << "Opcao invalida." << endl;
-        }
-
-    } while (opcao != 0);
-
-    while (inicioFila != nullptr) {
-        No* aux = inicioFila;
-        inicioFila = inicioFila->proximo;
-        delete aux;
+void pop() {
+    if (topoHistorico == nullptr) {
+        cout << "Historico vazio." << endl;
+        return;
     }
 
-    fimFila = nullptr;
+    No* aux = topoHistorico;
 
-    return 0;
+    cout << "Removido do historico: "
+         << aux->nome << endl;
+
+    topoHistorico = topoHistorico->proximo;
+
+    delete aux;
+}
+
+void peek() {
+    if (topoHistorico == nullptr) {
+        cout << "Historico vazio." << endl;
+        return;
+    }
+
+    cout << "Ultimo atendimento: "
+         << topoHistorico->nome << endl;
 }
